@@ -46,7 +46,14 @@ function build_box {
   echo "Building boxfile ${box}"
   cd ${temp_dir}
   echo '{"provider":"vmware_fusion"}' > metadata.json
-  tar cf - . | gzip -9 -c - > ${box}
+  compressor=gzip
+  args='-9 -c -'
+  which mgzip
+  if [[ $? == 0 ]]; then
+    compressor=mgzip
+    args="-9 -c -t 8"
+  fi
+  tar cf - . | ${compressor} ${args} > ${box}
 }
 
 validate_input
